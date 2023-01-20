@@ -1,4 +1,9 @@
-import mongoose, { InferSchemaType, Schema } from "mongoose";
+import mongoose, {
+  InferSchemaType,
+  Model,
+  ObtainSchemaGeneric,
+  Schema,
+} from "mongoose";
 
 const caseInsentiveCollation = {
   locale: "en",
@@ -68,7 +73,18 @@ export const CustomerSchema = new Schema(
   }
 );
 
+type GenericModel<TSchema extends Schema = any> = Model<
+  InferSchemaType<TSchema>,
+  ObtainSchemaGeneric<TSchema, "TQueryHelpers">,
+  ObtainSchemaGeneric<TSchema, "TInstanceMethods">,
+  ObtainSchemaGeneric<TSchema, "TVirtuals">,
+  TSchema
+> &
+  ObtainSchemaGeneric<TSchema, "TStaticMethods">;
+
+type CustomerModel = GenericModel<typeof CustomerSchema>;
+
 // Register the model
 export const Customer =
-  mongoose.models.Customer || mongoose.model("Customer", CustomerSchema);
-export type Customer = InferSchemaType<typeof CustomerSchema>;
+  (mongoose.models.Customer as CustomerModel) ||
+  mongoose.model("Customer", CustomerSchema);
