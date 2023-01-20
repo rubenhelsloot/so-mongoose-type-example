@@ -7,11 +7,11 @@ function useStatic() {
 async function useMethod() {
   const customer = await Customer.findOne().exec();
   customer // has type `any`
-  customer.markDeleted();
+  customer?.markDeleted();
 }
 
 async function accessVirtualProperty() {
   const customer = await Customer.findOne().exec();
   customer // has type `any`
-  return customer.fullName;
+  return customer?.fullName || customer?.firstName;
 }
